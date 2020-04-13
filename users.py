@@ -8,6 +8,10 @@ DB_PATH = "sqlite:///sochi_athletes.sqlite3"
 Base = declarative_base()
 
 class User(Base):
+   """
+   Use class, ID is generated autmaticaly by sqlite
+   Class can be printed
+   """
    __tablename__ = 'user'
    id = sa.Column(sa.INTEGER, primary_key=True, autoincrement=True)
    first_name = sa.Column(sa.Text)
@@ -24,6 +28,11 @@ class User(Base):
          h=self.height if self.height else 0,)
 
 class MyDataBase():
+   """
+   DB connection class
+   self.sess is session
+   Supports context for sess.close()
+   """
    def __init__(self, dbp=DB_PATH):
       engine = sa.create_engine(dbp)
       self.sess = sessionmaker(engine)()
@@ -35,6 +44,10 @@ class MyDataBase():
       self.sess.close()
 
 def request_userdata(user=None):
+    """
+    Request user data from console
+    and return it as User class (new or existing from 'user' arg)
+    """
     print("Enter user data...")
     first_name = last_name = gender = email = birthdate = height = None
     while not first_name: first_name = input("First name: ")
@@ -84,6 +97,9 @@ def request_userdata(user=None):
     return user
 
 def request_userid():
+    """
+    Just request id from console and return it
+    """
     uid = None
     while not uid:
        uid = input("Enter user id: ")
@@ -105,12 +121,14 @@ if __name__ == "__main__":
    except ValueError:
       command = None
 
+   # Add new user
    if command == 1:
       user = request_userdata()
       with MyDataBase() as db:
          db.sess.add(user)
          db.sess.commit()
          print("User added")
+   # Change existed user by id
    elif command == 2:
       user_id = request_userid()
       with MyDataBase() as db:
@@ -124,6 +142,7 @@ if __name__ == "__main__":
                print("User changed")
          else:
             print("User id {} not found".format(user_id))
+   # Delete existed used by id
    elif command == 3:
       user_id = request_userid()
       with MyDataBase() as db:
@@ -136,6 +155,7 @@ if __name__ == "__main__":
                print("User deleted")
          else:
             print("User id {} not found".format(user_id))
+   # List all users (default)
    else:
       with MyDataBase() as db:
          print("All users:")

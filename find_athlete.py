@@ -2,6 +2,10 @@ from users import sa, Base, User, MyDataBase, request_userid
 from sqlalchemy.sql import func
 
 class Athlete(Base):
+   """
+   Athlete class
+   Can be printed
+   """
    __tablename__ = 'athelete'
    id = sa.Column(sa.INTEGER, primary_key=True, autoincrement=True)
    name = sa.Column(sa.Text)
@@ -18,6 +22,9 @@ class Athlete(Base):
               h=self.height if self.height else 0,)
 
 def athlets_by_birthdate(sess, birthdate):
+   """
+   Return all athlets as Athlet class close by 'birthdate'
+   """
    athlet_birthdate = \
       sess.query(Athlete.birthdate)\
       .order_by(
@@ -35,6 +42,9 @@ def athlets_by_birthdate(sess, birthdate):
       return None
 
 def athlets_by_height(sess, height):
+   """
+   Return all athlets as Athlet class close by 'heigth'
+   """
    athlete_height = \
       sess.query(Athlete.height)\
          .filter(Athlete.height.isnot(None)).order_by(
@@ -57,6 +67,9 @@ if __name__ == "__main__":
          print(user, "\n")
          print("Athletes close to user")
 
+         # Print all found by:
+         #  - birth date
+         #  - height
          for title, athlets_by, value in zip(
                ('by birth date', 'by heigth'),
                (athlets_by_birthdate, athlets_by_height),
